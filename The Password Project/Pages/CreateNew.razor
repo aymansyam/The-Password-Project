@@ -1,0 +1,155 @@
+﻿@using The_Password_Project.Model
+@page "/createnew"
+<h3>Create a new password (V2)</h3>
+V2 is replacing V1 password creation as there was a security flaw detected, so it is recommended you change your passwords to a V2 Pass Gen.
+<br />
+<br />
+Sets
+<ul>
+    @foreach (var set in sets.args)
+    {
+    <li>
+        <input type="checkbox" @bind="set.ShouldPromptAtStart" />
+        @set.Value
+    </li>
+    }
+</ul>
+<br />
+
+<ul>
+    @foreach (var Output in Outputs)
+    {
+    <li><b>Password:</b> <input value="@Output.Data" /></li>
+    <li><b>Save this URL:</b> <input value="@Output.Value" /></li>
+    }
+</ul>
+
+<br />
+<input type="password" placeholder="Access Key" @bind="accessKey" />
+<br />
+<input type="password" placeholder="Confirm Access Key" @bind="confirmKey" />
+<br />
+<input placeholder="Excluded (None Default)" @bind="excluded" />
+<br />
+<input placeholder="Length (12 Default)" @bind="length" />
+<br />
+
+
+<button @onclick="CreateNewButton">Create!</button>
+
+
+<b> Even though this isn't transmitting anything over the internet, for maximum safety, turn off internet while using this. Also, beware of prying eyes</b>
+
+<br />
+<br />
+Verify your access key by putting in a known password's URL: <br/>
+
+<input placeholder="URL" @bind="verify" />
+<button @onclick="Verify">Verify</button>
+
+<ul>
+    @foreach (var Output in Verifys)
+    {
+        <li><b>Password:</b> <input value="@Output.Data" /></li>
+    }
+</ul>
+
+
+
+<br /> <br />
+<h4>Usage Instructions:</h4>
+<ol>
+    <li> Choose which character sets you want to select from</li>
+    <br />
+    <br />
+    <li> Put your access key (Master Password).</li>
+    <br />
+    <br />
+    <li> Confirm your access key</li>
+    <br />
+    <br />
+    <li> Optionally, you can also put which characters to exclude from your password (default is none), and your password length (default is 12)</li>
+    <br />
+    <br />
+    <li> Keep clicking Create until you find a password you like...</li>
+    <br />
+    <br />
+    <li> Copy password to your account (no whitespace used in password). </li>
+    <br />
+    <br />
+    <li> Save the URL to the password for later access</li>
+    <br />
+</ol>
+<b>Everything is case sensitive</b>
+<br />
+<br />
+
+
+@code {
+    ServiceLocator service = new ServiceLocator();
+    private CreateNewHelper sets = new CreateNewHelper(Constants.CharacterSetDict);
+    public IList<JsonThing> Outputs = new List<JsonThing>();
+    public IList<JsonThing> Verifys = new List<JsonThing>();
+    private string verify;
+    private string accessKey;
+    private string confirmKey;
+    private string excluded;
+    private string length;
+    private void CreateNewButton()
+    {
+        if (accessKey != confirmKey) { return; }
+        service.InitDefaults();
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordAccessKey).Data = accessKey;
+        var _ID = Constants.Default;
+        var _sets = "";
+
+        foreach (var set in sets.args)
+        {
+            if (set.ShouldPromptAtStart)
+            {
+                _sets = $"{_sets}{set.Key}";
+            }
+        }
+
+        var _excluded = excluded.IsNullOrWhiteSpace() ? Constants.Default : excluded;
+        var _length = length.IsNullOrWhiteSpace() ? "12" : length;
+
+        var URL = $"{_ID}/{_sets}/{_excluded}/{_length}";
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordURLKey).Data = URL;
+
+        service.InputOutputParserService.ConvertInput();
+        service.SharePrompts();
+        service.PassGenService.ProduceV2();
+        service.ShareResults();
+        Outputs = service.InputOutputParserService.Output;
+    }
+
+    private void Verify()
+    {
+        if (accessKey != confirmKey) { return; }
+        service.InitDefaults();
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordAccessKey).Data = accessKey;
+        var _ID = Constants.Default;
+        var _sets = "";
+
+        foreach (var set in sets.args)
+        {
+            if (set.ShouldPromptAtStart)
+            {
+                _sets = $"{_sets}{set.Key}";
+            }
+        }
+
+        var _excluded = excluded.IsNullOrWhiteSpace() ? Constants.Default : excluded;
+        var _length = length.IsNullOrWhiteSpace() ? "12" : length;
+
+        var URL = verify;
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordURLKey).Data = URL;
+
+        service.InputOutputParserService.ConvertInput();
+        service.SharePrompts();
+        service.PassGenService.ProduceV2();
+        service.ShareResults();
+        Verifys = service.InputOutputParserService.Output;
+    }
+}

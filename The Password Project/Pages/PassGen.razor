@@ -1,0 +1,102 @@
+﻿@using The_Password_Project.Model
+@using Blazored.Toast;
+@using Blazored.Toast.Services
+@inject IToastService toastService
+@inject IJSRuntime JSRuntime
+@page "/passgen"
+
+<b>
+    V1 PassGen: (Deprecated)
+</b>
+<input placeholder="URL" @bind="link" />
+<input type="password" placeholder="Password access key" @bind="passwordAccess" />
+<button @onclick="startProcess">Generate</button>
+<ul>
+    @foreach (var Output in Outputs)
+    {
+        <li><b>Password:</b> <input type="password" value="@Output.Data" /> <button @onclick="@(e => Copy(Output.Data))">Copy</button></li>
+    }
+</ul>
+
+<b>
+    V2 PassGen:
+</b>
+<input placeholder="URL" @bind="linkV2" />
+<input type="password" placeholder="Password access key" @bind="passwordAccessV2" />
+<button @onclick="startProcessV2">Generate</button>
+<ul>
+    @foreach (var Output in OutputsV2)
+    {
+        <li><b>Password:</b> <input type="password" value="@Output.Data" /> <button @onclick="@(e => Copy(Output.Data))">Copy</button></li>
+    }
+</ul>
+
+<br />
+<h4>Usage Instructions:</h4>
+<ol>
+    <li> Put a URL in the form of: </li>
+    <b>
+        ID/Sets/Excluded/Length
+    </b>
+    <br />
+    <br />
+    <li>Put your access key (Master Password).</li>
+    <br />
+    <br />
+    <li>Click Generate</li>
+    <br />
+    <br />
+    <li> Copy password to your account (no whitespace used in password). </li>
+    <br />
+</ol>
+<b>Everything is case sensitive</b>
+<br />
+<br />
+
+
+
+@code {
+    ServiceLocator service = new ServiceLocator();
+    private string link;
+    private string linkV2;
+    private string passwordAccess;
+    private string passwordAccessV2;
+    public IList<JsonThing> Outputs = new List<JsonThing>();
+    public IList<JsonThing> OutputsV2 = new List<JsonThing>();
+
+    private void startProcess()
+    {
+        service.InitDefaults();
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordAccessKey).Data = passwordAccess;
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordURLKey).Data = link;
+
+        service.InputOutputParserService.ConvertInput();
+        service.SharePrompts();
+        service.PassGenService.Produce();
+        service.ShareResults();
+        Outputs = service.InputOutputParserService.Output;
+        toastService.ShowSuccess("Password Generated");
+    }
+
+    private void startProcessV2()
+    {
+        service.InitDefaults();
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordAccessKey).Data = passwordAccessV2;
+        service.InputOutputParserService.Input.GetJsonThing(Constants.PasswordURLKey).Data = linkV2;
+
+        service.InputOutputParserService.ConvertInput();
+        service.SharePrompts();
+        service.PassGenService.ProduceV2();
+        service.ShareResults();
+        OutputsV2 = service.InputOutputParserService.Output;
+        toastService.ShowSuccess("Password Generated");
+    }
+
+    private async Task Copy(string str)
+    {
+        await JSRuntime.InvokeVoidAsync("clipboardCopy.copyText", str);
+        toastService.ShowInfo("Copied");
+    }
+}
+
+

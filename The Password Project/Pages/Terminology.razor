@@ -1,0 +1,32 @@
+﻿@page "/terminology"
+
+<h4>Terminology</h4>
+<li> <b>URL:</b> How passwords are accessed (just like a website's URL). Takes the form of ID/Sets/Excluded/Length</li>
+
+<li> <b>Access Key:</b> The key to unlock the passwords in the URL. This is made up by you, so make sure it is secure and memorable.</li>
+
+<li> <b>ID:</b> A bunch of characters that identify your password.</li>
+
+<li> <b>Sets:</b> What character sets to include in your password.</li>
+
+<li> <b>Excluded:</b> Characters not allowed in password.</li>
+
+<li> <b>Length:</b> Numeric digit for how long you want the password to be. Note that you may not get all the characters in the CharacterSet if the length is too small.</li>
+
+<li>
+    <b>Seed:</b> What is used for procedural generation. The seed is technically the Access Key + ID, but in reality you can consider the URL to be the seed. The seed is then hashed 10 times over using sha-256 to give us a digest. A password is then made from the digest after some logical operations.
+        <br /> <br /> Here's a representation of what happens: Access key + ID -> 10x sha_256 -> Custom Logic using URL parameters -> Password
+</li>
+<br />
+<br /> Here is the actual source code for this website (Written in C#.NET Core-Blazor Webassembly PWA) <a href="https://github.com/aymansyam/The-Password-Project">https://github.com/aymansyam/The-Password-Project</a>
+
+
+<br />
+<br />
+
+
+
+
+@code {
+
+}

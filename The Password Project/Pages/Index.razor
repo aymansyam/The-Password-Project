@@ -1,0 +1,35 @@
+﻿@page "/"
+
+<h1>Introduction</h1>
+
+The Password Project is a new and innovative form of password management. Instead of you having to come up with passwords all the time and keeping them safe, this website does that for you! It creates
+passwords procedurally using an <b>Access Key</b> and a <b>URL</b>. As long as you keep this access key safe, you can generate thousands of passwords without having to memorize any of them! All you would have to do
+is to store the password's URL somewhere if you want to retrieve it, and since no one knows your access key, no one can use the URLs to access your passwords. Which means you might as well display them in the Louvre as far as security is concerned.
+The catch, however, is that this access key needs to be as secure as possible, because leaking it would expose all of your passwords.
+<br />
+<br />
+But wait a minute, what's that I hear? You're saying password managers have basically the same risk? Well, you'd be right! Password managers like Dashlane <b>will</b> store your passwords securely, but you will need an
+access key (or a Master Password) to view them. How this differs from what we did is in the concept that people don't <b>need</b> to invent passwords all the time, and these passwords don't <b>need</b> to be
+stored anywhere. With the power of cryptography, you are your own password manager!
+<br />
+<br />
+This idea was inspired by the Bitcoin Project. The idea that you can control your own money using cryptography made me think about doing the same to passwords.
+<br />
+<br />
+This website runs entirely within your browser, and you can also download it as an app! If you're on PC, there should be a + sign in the search bar to download it as a program. If you're on Android or iOS,
+you can navigate to "Add to Home Screen" and it will show up as an app in your phone. That way, you can use it even if you're not connected to the internet
+<br />
+<br />
+This service is meant to be <b>free forever.</b> Use it in good health.
+<br />
+<br />
+<h4>What happens if I need to change one of the generated passwords?</h4>
+Just generate another one and save the new URL.
+<br />
+<br />
+<h4>How secure is this? Can the seeds be reverse-engineered?</h4>
+The seeds are not reverse-engineereable. They are hashed 10 times using sha-256, which protects against rainbow tables (what people use to reverse engineer sha-256). If sha-256 is ever broken, this could compromise your passwords. But it hasn't been done yet.
+<br />
+<br />
+<h4>What's the deal with "/" and space not being allowed by default in the password?</h4>
+"/" and space are special characters because the program logic uses whitespace and "/" to parse the URL, and therefore to simplify things the only way to include them is by enabling them in the character set.
