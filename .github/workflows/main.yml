@@ -21,7 +21,7 @@ dotnet-version: 3.1
 
 # Publishes the Blazor project to the release folder
 – name: Publish .NET Core Project
-run: dotnet publish "The Password Project.csproj" -c Release -o release –nologo
+run: dotnet publish BlazorGitHubPagesDemo -c Release -o release –nologo
 
 # Changes the base tag in index.html from ‘/’ to ‘BlazorGitHubPagesDemo’ to match the GitHub Pages repository subdirectory
 – name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
